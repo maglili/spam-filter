@@ -1,6 +1,6 @@
 SpamFilter using sk-learn SVM  by Python.
+This code is reference to Machine learning course taught by Andrew Ng on coursera.
 
-作者: 108-2 機械四丙 105307010 鄧立昌
 =============================================================================================================
 程式需要import下列module:
 1. Numpy  
