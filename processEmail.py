@@ -1,17 +1,23 @@
 import re
-from getVocabList import getVocabList
 from nltk.stem import PorterStemmer
 
+def getVocabList():
+    fh = open('./training_data/vocab.txt')
+    vocabList=[]
+
+    for row in fh:
+        line_split = row.split()
+        vocabList.append(line_split[1])
+    return vocabList
+
 def processEmail(email_contents):
-
     vocabList = getVocabList() #Load Vocabulary
-
     word_indices = [] #Init return value
-    print('\n========= Originoal Email =============\n')
+    print('[Originoal Email]:\n')
     print(email_contents)
-
+    print('='*30)
     #----------------------preprocess email-----------------------
-    #lower case
+    #text to lower case
     email_contents = email_contents.lower()
 
     #strip all HTML
@@ -30,8 +36,7 @@ def processEmail(email_contents):
     email_contents = re.sub(r'[$]+','dollar',email_contents)
 
     #---------------------------tokennize email--------------------------
-    print('\n========= Precessed Email =============\n')
-
+    print('[Processed Email]:\n')
     email_split = email_contents.split()
 
     #handel non-character
@@ -62,6 +67,7 @@ def processEmail(email_contents):
                 word_indices.append(j)
 
     print(email_contents)
+    print('='*30)
     #print('\n========= word_indices =============\n')
     #print(word_indices)
     return word_indices

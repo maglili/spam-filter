@@ -1,41 +1,43 @@
 from processEmail import processEmail
-from emailFeatures import emailFeatures
 import numpy as np
 import scipy.io as sio # use matlab's .mat documents
-import joblib #store trainning model
+import pickle
 
-# -----------------------Load from file---------------------------------
-clf = joblib.load('joblib_model.pkl')
+def email_features_vector(word_indices):
+    """
+    reture a feature vector
+    """
+    features = np.zeros(1899)
+    for idx, value in enumerate(word_indices):
+        features[value] = 1
+    features = np.expand_dims(features, axis=0)
+    return features
 
+#load model
+clf = pickle.load(open('./model/svm_model.pkl','rb'))
+
+#load input file
+root = './input/'
 fname = input('Enter file name :')
 try:
-    fh = open(fname,"r",encoding="utf-8")
+    fh = open(root+fname+'.txt',"r", encoding="utf-8")
+    print('-'*30)
 except:
     print('Error opening file')
     quit()
-#-----------------------mail processing----------------------------------
+
 email_contents = fh.read()
 word_indices = processEmail(email_contents)
-features = emailFeatures(word_indices)
+features = email_features_vector(word_indices)
 
-#------------------------------print info---------------------------------
-print('\n============precessing info============\n')
-print('Length of feature vector: {}\n'.format(len(features)))
-sum = 0
-for i in features:
-    if i > 0 :
-        sum = sum + 1
-print('Number of non-zero entries: {}\n'.format(sum))
 
-#-------------------------predict----------------------------------------
-#change list "features" to array "X".
-X =  np.array(features)
-#svm predict
-#use reshape to aviod error
-result = clf.predict(X.reshape(1,-1))
 
-print('\n============Result============\n')
+#predict
+X =  features
+result = clf.predict(X)
+
+# result
 if result[0] == 0:
-    print('NOT spam.')
+    print('\n[Result]: NOT spam.')
 else:
-    print('Spam mail !')
+    print('\n[Result]: Spam mail!')
